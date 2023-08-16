@@ -52,10 +52,9 @@ def accuracy(y_true, y_pred):
 
 itr=[]
 acc=[]
-num = [50, 250, 500, 1000, 1500, 2000]
 
-for iters in range(1000, 2000, 5):
-    regressor = LogisticRegression(learning_rate=0.0001, n_iters=iters)
+for iters in range(0, 2000, 10):
+    regressor = LogisticRegression(learning_rate=0.00001, n_iters=iters)
     regressor.fit(xtrain, ytrain)
     predictions = regressor.predict(xtest)
     itr.append(iters)
