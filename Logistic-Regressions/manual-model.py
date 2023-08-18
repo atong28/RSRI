@@ -3,9 +3,12 @@ from sklearn.model_selection import train_test_split
 from numpy import log,dot,e,shape
 import matplotlib.pyplot as plt
 
+np.random.seed(3)
+
 # Constants
 learning_rate = 0.0001
 num_iters = 4000
+bias = False
 
 # Calculate the sigmoid / logistic function
 def sigmoid(z):
@@ -25,19 +28,18 @@ def cost(X, y, theta):
 #   n: number of samples to generate
 #   Generate an n x p array of floats from 0 to 1, and dot with theta to find z
 #   Probabilities result from applying sigmoid to the z array
-theta = np.array([[6], [-5]])
+theta = np.random.random(size=(100, 1)) * 4 - 2
 p = len(theta)
 n = 2000
-np.random.seed(1)
 X = np.random.rand(n, p)
 z = np.dot(X, theta)
 prob = sigmoid(z)
 
 # Generate labels by sampling from Bernoulli(prob)
-## y = np.random.binomial(1, prob.flatten())
+y = np.random.binomial(1, prob.flatten())
 
 # Generate labels deterministically
-y = np.where(prob.flatten() >= 0.5, 1, 0)
+## y = np.where(prob.flatten() >= 0.5, 1, 0)
 
 # Split data into training and testing data
 xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.2, random_state=0)
@@ -57,7 +59,8 @@ class LogisticRegression:
         return weights, X
 
     def fit(self, X, y):
-        weights, X = self.initialize(X)
+        if bias: weights, X = self.initialize(X)
+        else: weights = np.zeros((shape(X)[1], 1))
         cost_list = np.zeros(self.iters,)
         for i in range(self.iters):
             weights = weights - self.alpha * dot(X.T, sigmoid(dot(X,weights)) - np.reshape(y,(len(y),1)))
@@ -66,7 +69,8 @@ class LogisticRegression:
         return cost_list
     
     def predict(self, X):
-        z = dot(self.initialize(X)[1],self.weights)
+        if bias: z = dot(self.initialize(X)[1],self.weights)
+        else: z = dot(X, self.weights)
         l = [1 if i > 0.5 else 0 for i in sigmoid(z)]
         return np.array(l)
     

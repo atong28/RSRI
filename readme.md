@@ -1,4 +1,4 @@
-# RSRI Projects`
+# RSRI Projects
 
 ## Logistic Regression
 
