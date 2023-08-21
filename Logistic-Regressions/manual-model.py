@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from numpy import log,dot,e,shape
 import matplotlib.pyplot as plt
+import math
 
 np.random.seed(3)
 
@@ -29,6 +30,8 @@ def cost(X, y, theta):
 #   Generate an n x p array of floats from 0 to 1, and dot with theta to find z
 #   Probabilities result from applying sigmoid to the z array
 theta = np.random.random(size=(100, 1)) * 4 - 2
+
+print(f'Norm of parameter vector: {np.linalg.norm(theta)}')
 p = len(theta)
 n = 2000
 X = np.random.rand(n, p)
@@ -81,3 +84,9 @@ def accuracy(y_true, y_pred):
 regressor = LogisticRegression(alpha = learning_rate, iters = num_iters)
 regressor.fit(xtrain, ytrain)
 print(f'Trained weights: {regressor.weights.T} has norm {np.linalg.norm(regressor.weights)} with accuracy {accuracy(ytest, regressor.predict(xtest))}')
+
+MSE = np.square(np.subtract(theta,regressor.weights.T)).mean() 
+
+RMSE = math.sqrt(MSE)
+print("Root Mean Square Error:\n")
+print(RMSE)
