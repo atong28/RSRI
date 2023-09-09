@@ -23,18 +23,25 @@ def cost(X, y, theta):
     cost = -((cost1 + cost0))/len(y) 
     return cost
 
+
+
 # Dataset generation
-#   theta: parameter vector for generation
 #   p: number of features
-#   n: number of samples to generate
+#   m: norm of the parameter vector
+#   theta: parameter vector for generation
+#   n: number of samples in training set
+#   t: number of samples in testing set
 #   Generate an n x p array of floats from 0 to 1, and dot with theta to find z
 #   Probabilities result from applying sigmoid to the z array
-theta = np.random.random(size=(100, 1)) * 4 - 2
+p = 100
+m = 100
+theta = np.random.random(size=(p, 1)) * 4 - 2
+theta = theta * m / np.linalg.norm(theta)
 
 print(f'Norm of parameter vector: {np.linalg.norm(theta)}')
-p = len(theta)
-n = 2000
-X = np.random.rand(n, p)
+n =20000
+t = 500
+X = np.random.rand(n+t, p)
 z = np.dot(X, theta)
 prob = sigmoid(z)
 
@@ -45,7 +52,7 @@ y = np.random.binomial(1, prob.flatten())
 ## y = np.where(prob.flatten() >= 0.5, 1, 0)
 
 # Split data into training and testing data
-xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.2, random_state=0)
+xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=t/(n+t), random_state=0)
     
 class LogisticRegression:
 
@@ -81,12 +88,24 @@ def accuracy(y_true, y_pred):
     accuracy = np.sum(y_true == y_pred) / len(y_true)
     return accuracy
 
-regressor = LogisticRegression(alpha = learning_rate, iters = num_iters)
-regressor.fit(xtrain, ytrain)
-print(f'Trained weights: {regressor.weights.T} has norm {np.linalg.norm(regressor.weights)} with accuracy {accuracy(ytest, regressor.predict(xtest))}')
+iter_list = []
+rms_list = []
 
-MSE = np.square(np.subtract(theta,regressor.weights.T)).mean() 
-
-RMSE = math.sqrt(MSE)
-print("Root Mean Square Error:\n")
-print(RMSE)
+# plot as n increases the RMSE
+for iter in range(500, 20000, 500):
+    regressor = LogisticRegression(alpha = learning_rate, iters = num_iters)
+    regressor.fit(xtrain[:iter], ytrain[:iter])
+    print(f'Trained weights with n={iter} has norm {np.linalg.norm(regressor.weights)} with accuracy {accuracy(ytest, regressor.predict(xtest))}')
+    # MSE = np.linalg.norm(np.subtract(theta / np.linalg.norm(theta),regressor.weights.T / np.linalg.norm(regressor.weights.T)))
+    MSE = np.linalg.norm(np.subtract(theta,regressor.weights.T))
+    RMSE = MSE / math.sqrt(p)
+    print(f'RMSE: {RMSE}')
+    
+    iter_list.append(iter)
+    rms_list.append(RMSE)
+    
+plt.scatter(iter_list, rms_list,color="r")
+plt.plot(iter_list, rms_list)
+plt.xlabel("Number of iteration")
+plt.ylabel("RMSE")
+plt.show()
