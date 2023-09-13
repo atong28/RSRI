@@ -4,8 +4,6 @@ from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
 import math
 
-np.random.seed(3)
-
 # Constants
 learning_rate = 0.0001
 num_iters = 4000
@@ -22,9 +20,10 @@ def accuracy(y_true, y_pred):
 
 iter_list = []
 rms_list = []
+diff_list = []
 
-for m in range(5, 50, 1):
-    
+for m in range(1, 80):
+    np.random.seed(3)
 
     # Dataset generation
     #   p: number of features
@@ -36,9 +35,8 @@ for m in range(5, 50, 1):
     #   Probabilities result from applying sigmoid to the z array
     p = 100
     theta = np.random.random(size=(p, 1)) * 4 - 2
-    theta = theta * m / 10 / np.linalg.norm(theta)
+    theta = theta * m / np.linalg.norm(theta)
 
-    print(f'Norm of parameter vector: {np.linalg.norm(theta)}')
     n = 25000
     t = 500
     X = np.random.rand(n+t, p)
@@ -57,9 +55,9 @@ for m in range(5, 50, 1):
     # Train the model
     
 
-    regressor = LogisticRegression()
+    regressor = LogisticRegression(max_iter=10000)
     regressor.fit(xtrain, ytrain)
-    print(f'Trained weights with norm of theta={m} has norm {np.linalg.norm(regressor.coef_)} with accuracy {accuracy(ytest, regressor.predict(xtest))}')
+    print(f'Trained weights with norm of theta={m} has norm {np.linalg.norm(regressor.coef_)} (diff {m - np.linalg.norm(regressor.coef_)}) with accuracy {accuracy(ytest, regressor.predict(xtest))}')
     ## Formula 1
     # MSE = np.linalg.norm(np.subtract(theta,regressor.coef_.T)) / np.linalg.norm(theta)
     
@@ -68,8 +66,9 @@ for m in range(5, 50, 1):
     RMSE = MSE / math.sqrt(p)
     print(f'RMSE: {RMSE}')
     
-    iter_list.append(m/10)
+    iter_list.append(m)
     rms_list.append(RMSE)
+    diff_list.append(m - np.linalg.norm(regressor.coef_))
         
 plt.plot(iter_list, rms_list)
 plt.xlabel("Norm of theta")

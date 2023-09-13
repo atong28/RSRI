@@ -29,7 +29,7 @@ def accuracy(y_true, y_pred):
 #   Generate an n x p array of floats from 0 to 1, and dot with theta to find z
 #   Probabilities result from applying sigmoid to the z array
 p = 100
-m = 300
+m = 30
 theta = np.random.random(size=(p, 1)) * 4 - 2
 theta = theta * m / np.linalg.norm(theta)
 
