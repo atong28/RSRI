@@ -55,22 +55,22 @@ for m in range(1, 80):
     # Train the model
     
 
-    regressor = LogisticRegression(max_iter=10000)
+    regressor = LogisticRegression(max_iter=10000, penalty=None)
     regressor.fit(xtrain, ytrain)
     print(f'Trained weights with norm of theta={m} has norm {np.linalg.norm(regressor.coef_)} (diff {m - np.linalg.norm(regressor.coef_)}) with accuracy {accuracy(ytest, regressor.predict(xtest))}')
     ## Formula 1
-    # MSE = np.linalg.norm(np.subtract(theta,regressor.coef_.T)) / np.linalg.norm(theta)
+    MSE = np.linalg.norm(np.subtract(theta,regressor.coef_.T)) / np.linalg.norm(theta)
     
     ## Formula 2
-    MSE = np.linalg.norm(np.subtract(theta / np.linalg.norm(theta),regressor.coef_.T / np.linalg.norm(regressor.coef_.T)))
+    # MSE = np.linalg.norm(np.subtract(theta / np.linalg.norm(theta),regressor.coef_.T / np.linalg.norm(regressor.coef_.T)))
     RMSE = MSE / math.sqrt(p)
     print(f'RMSE: {RMSE}')
     
     iter_list.append(m)
     rms_list.append(RMSE)
-    diff_list.append(m - np.linalg.norm(regressor.coef_))
+    diff_list.append(1 - np.linalg.norm(regressor.coef_) / np.linalg.norm(theta))
         
-plt.plot(iter_list, rms_list)
+plt.plot(iter_list, diff_list)
 plt.xlabel("Norm of theta")
 plt.ylabel("RMSE")
 plt.show()
