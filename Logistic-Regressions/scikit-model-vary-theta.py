@@ -22,7 +22,7 @@ iter_list = []
 rms_list = []
 diff_list = []
 
-for m in range(1, 80):
+for m in range(1, 160):
     np.random.seed(3)
 
     # Dataset generation
@@ -68,9 +68,9 @@ for m in range(1, 80):
     
     iter_list.append(m)
     rms_list.append(RMSE)
-    diff_list.append(1 - np.linalg.norm(regressor.coef_) / np.linalg.norm(theta))
+    diff_list.append(np.linalg.norm(theta) - np.linalg.norm(regressor.coef_))
         
 plt.plot(iter_list, diff_list)
 plt.xlabel("Norm of theta")
-plt.ylabel("RMSE")
+plt.ylabel("Actual - predicted")
 plt.show()
