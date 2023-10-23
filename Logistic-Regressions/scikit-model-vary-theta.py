@@ -34,12 +34,13 @@ for m in range(1, 160):
     #   Generate an n x p array of floats from 0 to 1, and dot with theta to find z
     #   Probabilities result from applying sigmoid to the z array
     p = 100
-    theta = np.random.random(size=(p, 1)) * 4 - 2
+    # theta = np.random.random(size=(p,1)) * 2 - 1
+    theta = np.random.normal(0, 1, size=(p, 1))
     theta = theta * m / np.linalg.norm(theta)
 
     n = 25000
     t = 500
-    X = np.random.rand(n+t, p)
+    X = np.random.rand(n+t, p) * 2 - 1
     z = np.dot(X, theta)
     prob = sigmoid(z)
 
@@ -59,10 +60,10 @@ for m in range(1, 160):
     regressor.fit(xtrain, ytrain)
     print(f'Trained weights with norm of theta={m} has norm {np.linalg.norm(regressor.coef_)} (diff {m - np.linalg.norm(regressor.coef_)}) with accuracy {accuracy(ytest, regressor.predict(xtest))}')
     ## Formula 1
-    MSE = np.linalg.norm(np.subtract(theta,regressor.coef_.T)) / np.linalg.norm(theta)
+    # MSE = np.linalg.norm(np.subtract(theta,regressor.coef_.T)) / np.linalg.norm(theta)
     
     ## Formula 2
-    # MSE = np.linalg.norm(np.subtract(theta / np.linalg.norm(theta),regressor.coef_.T / np.linalg.norm(regressor.coef_.T)))
+    MSE = np.linalg.norm(np.subtract(theta / np.linalg.norm(theta),regressor.coef_.T / np.linalg.norm(regressor.coef_.T)))
     RMSE = MSE / math.sqrt(p)
     print(f'RMSE: {RMSE}')
     
@@ -70,7 +71,7 @@ for m in range(1, 160):
     rms_list.append(RMSE)
     diff_list.append(np.linalg.norm(theta) - np.linalg.norm(regressor.coef_))
         
-plt.plot(iter_list, diff_list)
+plt.plot(iter_list, rms_list)
 plt.xlabel("Norm of theta")
-plt.ylabel("Actual - predicted")
+plt.ylabel("RMSE")
 plt.show()

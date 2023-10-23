@@ -2,14 +2,15 @@ import numpy as np
 import cvxpy as cp
 from sklearn.model_selection import train_test_split
 from numpy import shape
-import matplotlib.pyplot as plt
+
+import json
 
 np.random.seed(1)
 
 # Constants
 NUM_FEATURES = 100
-NUM_TRAIN_SAMPLES = 2000
-NUM_TEST_SAMPLES = 500
+NUM_TRAIN_SAMPLES = 25000
+NUM_TEST_SAMPLES = 25000
 NUM_TOTAL_SAMPLES = NUM_TRAIN_SAMPLES + NUM_TEST_SAMPLES
 
 # Calculate the sigmoid / logistic function
@@ -22,7 +23,7 @@ def sigmoid(z):
 def generate_data(beta):
     theta_gen = np.random.random(size=(NUM_FEATURES, 1)) * 2 - 1
     theta_gen = theta_gen * beta / np.linalg.norm(theta_gen)
-    X_gen = np.random.rand(NUM_TOTAL_SAMPLES, NUM_FEATURES)
+    X_gen = np.random.rand(NUM_TOTAL_SAMPLES, NUM_FEATURES) * 2 - 1
     z_gen = np.dot(X_gen, theta_gen)
     y_gen = np.random.binomial(1, sigmoid(z_gen))
     return theta_gen, X_gen, y_gen
@@ -48,7 +49,7 @@ class LogisticRegression:
     
     def run(self):
         self.problem.solve()
-        self.RMSE = np.linalg.norm(self.theta - self.weights.value) / (np.sqrt(NUM_FEATURES) / self.beta)
+        self.RMSE = np.linalg.norm(self.theta - self.weights.value) / (np.sqrt(NUM_FEATURES) / self.beta) / NUM_FEATURES
         print(f'Solve status: {self.problem.status}')
         print(f'Magnitude of theta: {np.linalg.norm(self.theta)}, Shape of X {shape(self.X)}, shape of y {shape(self.y)}')
         print(f'Magnitude of weights: {cp.norm(self.weights).value}')
@@ -73,10 +74,16 @@ def run(beta):
     print(f'Test error: {test_error}')
     return regressor
 
-l = []
-for i in range(100):
-    l.append(run(i).RMSE)
-plt.scatter(list(range(100)), l, color="r")
-plt.xlabel("Beta")
-plt.ylabel("Error")
-plt.show()
+if __name__ == '__main__':
+    with open('data.json', 'r') as f:
+        data = json.load(f)
+    try:
+        for beta in range(50, 100):
+            try:
+                regressor = run(beta)
+                data[beta].append(regressor.RMSE)
+            except cp.SolverError:
+                continue
+    finally:
+        with open('data.json', 'w') as f:
+            f.write(json.dumps(data))
