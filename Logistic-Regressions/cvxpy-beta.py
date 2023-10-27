@@ -2,11 +2,12 @@ import numpy as np
 import cvxpy as cp
 from sklearn.model_selection import train_test_split
 import json
+import sys
 
 # Constants
 SEED = 1
 NUM_FEATURES = 100
-NUM_TRAIN_SAMPLES = 500
+NUM_TRAIN_SAMPLES = 10000
 NUM_TEST_SAMPLES = 1
 NUM_TOTAL_SAMPLES = NUM_TRAIN_SAMPLES + NUM_TEST_SAMPLES
 EPSILON = 0.5
@@ -18,6 +19,8 @@ def sigmoid(z):
 # Dataset generation
 #   Generate an array of floats from 0 to 1, and dot with theta to find z
 #   Probabilities result from applying sigmoid to the z array
+#   Theta is drawn from N(0,1) and normalized to a given value of beta
+#   X is drawn randomly from U[-1, 1]
 def generate_data(beta):
     np.random.seed(SEED)
     theta_gen = np.random.normal(size=(NUM_FEATURES, 1))
@@ -27,8 +30,8 @@ def generate_data(beta):
     y_gen = np.random.binomial(1, sigmoid(z_gen))
     return theta_gen, X_gen, y_gen
     
+# Logistic Regression Object
 class LogisticRegression:
-
     def __init__(self, xtrain, ytrain, beta, xtest, ytest, theta):
         self.X = xtrain
         self.y = ytrain
@@ -38,6 +41,7 @@ class LogisticRegression:
         self.theta = np.ndarray.flatten(theta)
         self.problem = self.setup()
 
+    # Initialize the CVXPY maximization problem.
     def setup(self):
         self.weights = cp.Variable(NUM_FEATURES)
         log_likelihood = cp.sum(
@@ -46,6 +50,7 @@ class LogisticRegression:
         constraints = [cp.norm(self.weights) <= self.beta]
         return cp.Problem(cp.Maximize(log_likelihood/NUM_TRAIN_SAMPLES), constraints)
     
+    # Solve the problem, and calculate various measurements for performance
     def run(self):
         self.problem.solve(max_iters=1000)
         self.RMSE = np.linalg.norm(self.theta - self.weights.value) / (np.sqrt(NUM_FEATURES) * self.beta)
@@ -71,7 +76,11 @@ def run(beta):
     regressor.run()
     return regressor
 
+# Run with arguments: python3 cvxpy-beta.py <seed> <n>
 if __name__ == '__main__':
+    SEED = int(sys.argv[1])
+    NUM_TRAIN_SAMPLES = int(sys.argv[2])
+    print(f'Initializing with seed {SEED}, n={NUM_TRAIN_SAMPLES}.')
     with open('data.json', 'r') as f:
         data = json.load(f)
     try:
@@ -80,6 +89,7 @@ if __name__ == '__main__':
                 regressor = run(beta)
                 data[str(NUM_TRAIN_SAMPLES)][beta].append(regressor.RMSE)
             except cp.SolverError:
+                print(f'Error reached at beta = {beta}')
                 continue
     except KeyboardInterrupt:
         pass
