@@ -81,18 +81,18 @@ if __name__ == '__main__':
     SEED = int(sys.argv[1])
     NUM_TRAIN_SAMPLES = int(sys.argv[2])
     print(f'Initializing with seed {SEED}, n={NUM_TRAIN_SAMPLES}.')
-    with open('data.json', 'r') as f:
-        data = json.load(f)
+    
     try:
         for beta in range(1, 101):
             try:
+                with open('data.json', 'r') as f: data = json.load(f)
                 regressor = run(beta)
                 data[str(NUM_TRAIN_SAMPLES)][beta].append(regressor.RMSE)
+                with open('data.json', 'w') as f: f.write(json.dumps(data))
             except cp.SolverError:
                 print(f'Error reached at beta = {beta}')
                 continue
     except KeyboardInterrupt:
-        pass
-    finally:
-        with open('data.json', 'w') as f:
-            f.write(json.dumps(data))
+        print('Interrupted')
+        sys.exit(0)
+        
