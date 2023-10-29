@@ -5,11 +5,8 @@ import json
 import sys
 
 # Constants
-SEED = 1
 NUM_FEATURES = 100
-NUM_TRAIN_SAMPLES = 10000
 NUM_TEST_SAMPLES = 1
-NUM_TOTAL_SAMPLES = NUM_TRAIN_SAMPLES + NUM_TEST_SAMPLES
 EPSILON = 0.5
 
 # Calculate the sigmoid / logistic function
@@ -52,7 +49,7 @@ class LogisticRegression:
     
     # Solve the problem, and calculate various measurements for performance
     def run(self):
-        self.problem.solve(max_iters=1000)
+        self.problem.solve(solver=cp.CLARABEL)
         self.RMSE = np.linalg.norm(self.theta - self.weights.value) / (np.sqrt(NUM_FEATURES) * self.beta)
         self.RMSE2 = np.linalg.norm(self.theta / self.beta - self.weights.value / cp.norm(self.weights).value) / (np.sqrt(NUM_FEATURES))
         if abs(np.linalg.norm(self.theta) - cp.norm(self.weights).value) > EPSILON:
@@ -80,19 +77,24 @@ def run(beta):
 if __name__ == '__main__':
     SEED = int(sys.argv[1])
     NUM_TRAIN_SAMPLES = int(sys.argv[2])
+    NUM_TOTAL_SAMPLES = NUM_TRAIN_SAMPLES + NUM_TEST_SAMPLES
     print(f'Initializing with seed {SEED}, n={NUM_TRAIN_SAMPLES}.')
-    
+    with open(f'data_{SEED}.json', 'r') as f: 
+        data = json.load(f)
     try:
         for beta in range(1, 101):
             try:
-                with open('data.json', 'r') as f: data = json.load(f)
                 regressor = run(beta)
                 data[str(NUM_TRAIN_SAMPLES)][beta].append(regressor.RMSE)
-                with open('data.json', 'w') as f: f.write(json.dumps(data))
-            except cp.SolverError:
+            except KeyboardInterrupt:
+                print('Interrupted')
+                sys.exit(0)
+            except:
                 print(f'Error reached at beta = {beta}')
                 continue
     except KeyboardInterrupt:
         print('Interrupted')
         sys.exit(0)
-        
+    finally:
+        with open(f'data_{SEED}.json', 'w') as f: 
+            f.write(json.dumps(data))

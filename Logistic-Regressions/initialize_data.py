@@ -2,10 +2,14 @@ import json
 
 # CAN POTENTIALLY ERASE DATA, RUN WITH CARE
 
-with open('data.json', 'r') as f:
-    obj = json.load(f)
+NUM = 5
 
-obj.update({"20000": [[] for _ in range(101)]})
+obj = {}
 
-with open('data.json', 'w') as f:
+INDICES = {"500","1000","2500","5000","10000","15000","20000","25000"}
+
+for i in INDICES:
+    obj.update({i: [[] for _ in range(101)]})
+
+with open(f'data_{NUM}.json', 'w') as f:
     f.write(json.dumps(obj))
