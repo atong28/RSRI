@@ -8,13 +8,11 @@ for i in INDICES:
     data.update({i: [[] for _ in range(101)]})
 
 for i in range(1, 6):
-    with open(f'data_{i}.json', 'r') as f:
+    with open(f'vary_beta/data_{i}.json', 'r') as f:
         obj = json.load(f)
         for k, v in obj.items():
             for i in range(1, 101):
                 data[k][i] += v[i]
-
-print(data["500"])
 
 l500 = [np.mean(row) if len(row) != 0 else 0 for row in data["500"]]
 l1000 = [np.mean(row) if len(row) != 0 else 0 for row in data["1000"]]
