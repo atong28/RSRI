@@ -7,7 +7,7 @@ data = {}
 for i in INDICES:
     data.update({i: [[] for _ in range(101)]})
 
-for i in range(1, 6):
+for i in range(1, 11):
     with open(f'vary_beta/data_{i}.json', 'r') as f:
         obj = json.load(f)
         for k, v in obj.items():
