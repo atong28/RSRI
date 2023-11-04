@@ -68,4 +68,18 @@ def setup(self):
 
 ## Results
 
-TBD
+An initial eye estimate of critical points $n^*$ based on plotting RMSE vs $n$ averaged over 5-10 runs of each $\beta$.
+| $\beta$ | $\epsilon$ | $n^*$ |
+|---------|------------|-------|
+| 1.0     | 1.0        | 500   |
+| 2.0     | 0.5        | 1370  |
+| 5.0     | 0.2        | 2480  |
+| 10.0    | 0.1        | 4640  |
+| 20.0    | 0.05       | 10110 |
+| 50.0    | 0.02       | 21920 |
+
+I took numbers based on the graph shown here:
+
+<img src="Images/Figure_1.png" width="100%">
+
+For $\beta = 1.0$, then, I averaged 1000 simulations per every $\Delta n=5$ centered around $n=500$, and found that it was closer to 460. Then I ran 1000 more simulations centered around $n=460$, to produce this graph here:
