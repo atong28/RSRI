@@ -32,7 +32,8 @@ $$n^*(d, \beta, \epsilon) \asymp \begin{cases}
 ## Data Generation
 
 To generate the dataset, I generated $\theta \sim N(0, 1)$ and $X \sim U[-1, 1]$, producing an output binary classification label $y = \text{Bern}(\sigma(X^T \cdot \theta))$ where $\sigma(\eta)$ is the sigmoid function $(1+\exp(-\eta))^{-1}$.
-```# Dataset generation
+```python
+# Dataset generation
 #   Generate an array of floats from 0 to 1, and dot with theta to find z
 #   Probabilities result from applying sigmoid to the z array
 #   Theta is drawn from N(0,1) and normalized to a given value of beta
@@ -54,7 +55,8 @@ First, I started out with a basic sci-kit model estimating a randomly generated 
 ## CVXPY
 
 CVXPY is a library which simplifies convex optimization problems (in our case, minimizing negative logistic loss). The setup for the problem is relatively simple:
-```# Initialize the CVXPY maximization problem.
+```python
+# Initialize the CVXPY maximization problem.
 def setup(self):
     self.weights = cp.Variable(NUM_FEATURES)
     log_likelihood = cp.sum(
