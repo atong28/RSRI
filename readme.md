@@ -15,7 +15,7 @@ On the sample complexity of estimation in logistic regression | Daniel Hsu, Arya
 A summary of the above paper is presented as follows. The logistic regression model is one with continuous input $X \in \mathbb{R}$ and outputs a binary classifier $y \in \{0, 1\}$ (sometimes defined as {-1, +1} instead):
 
 $$y = \begin{cases}
-    1 & \text{ with prob. } \dfrac{1}{1+\exp(-\beta\langle X, \theta \rangle)} \\[13pt]
+    1 & \text{ with prob. } \dfrac{1}{1+\exp(-\beta\langle X, \theta \rangle)} \\
     0 & \text{ with prob. } \dfrac{1}{1+\exp(\beta\langle X, \theta \rangle)}
 \end{cases}$$
 
@@ -24,8 +24,8 @@ where $X = \{x_1, x_2, x_3, ..., x_n\}$, where $x_i \in \mathbb{R}^d$ and $\thet
 The value $\beta$, considered the inverse temperature, is what governs the \textit{signal-to-noise ratio}; when $\beta = 0$, we have pure noise; when $\beta = \infty$, we simply have a linear classifier which denotes where $x$ lies on the hyperplane. Then, in this project, we seek to validate the paper above's claim that the sample complexity $n^*(d, \beta, \epsilon)$, which is the smallest sample size $n$ such that $||\theta - \hat{\theta}|| < \epsilon$, satisfies
 
 $$n^*(d, \beta, \epsilon) \asymp \begin{cases}
-    \dfrac{d}{\beta^2\epsilon^2} & \text{ if } \beta ≲ 1 \text{ (high temperatures);} \\[13pt]
-    \dfrac{d}{\beta\epsilon^2} & \text{ if } 1 ≲ \beta ≲ \dfrac{1}{\epsilon} \text{ (medium temperatures);} \\[13pt]
+    \dfrac{d}{\beta^2\epsilon^2} & \text{ if } \beta ≲ 1 \text{ (high temperatures);} \\
+    \dfrac{d}{\beta\epsilon^2} & \text{ if } 1 ≲ \beta ≲ \dfrac{1}{\epsilon} \text{ (medium temperatures);} \\
     \dfrac{d}{\beta^2\epsilon^2} & \text{ if } \beta ≳ \dfrac{1}{\epsilon} \text{ (low temperatures);}
 \end{cases}$$
 
