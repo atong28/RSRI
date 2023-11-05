@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-index = "1.0"
+index = "50.0"
+CENTER = 21270
+DELTA = 200
 epsilon = 1/float(index)
 
 with open(f'vary_RMSE/data_{index}.json', 'r') as f:
@@ -12,8 +14,7 @@ with open(f'vary_RMSE/data_{index}.json', 'r') as f:
 n_list = []
 means_list = []
 
-CENTER = 460
-DELTA = 10
+
 
 # find means
 for k in obj.keys():
@@ -37,6 +38,8 @@ bestfit, = plt.plot(x, y)
 
 line, = plt.plot(sorted_n_list, sorted_mean_list)
 line_base, = plt.plot(n_list, [epsilon] * (len(n_list)))
+
+print(f'The critical value of n from linear interpolation yields n={(epsilon - reg.intercept_)/reg.coef_[0]}')
 
 plt.xlabel("n")
 plt.ylabel("RMSE")

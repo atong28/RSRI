@@ -145,7 +145,7 @@ def tighten_estimation(n, beta, delta, iters, step):
 # Run with arguments: python3 cvxpy-beta.py <mode> <seed> <n>
 # Mode 1: vary beta, fixed n with output RMSE
 # Mode 2: vary n, fixed beta with output RMSE
-# Mode 3: vary n, fixed beta at a target RMSE, n = center, delta = spread, beta = beta, iters = how many repetitions, step = distances between each n tested
+# Mode 3: vary n, fixed beta at a target RMSE, n = center, beta = beta, delta = spread, iters = how many repetitions, step = distances between each n tested
 if __name__ == '__main__':
     match int(sys.argv[1]):
         case 1:

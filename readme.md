@@ -69,17 +69,21 @@ def setup(self):
 ## Results
 
 An initial eye estimate of critical points $n^*$ based on plotting RMSE vs $n$ averaged over 5-10 runs of each $\beta$.
-| $\beta$ | $\epsilon$ | $n^*$ |
-|---------|------------|-------|
-| 1.0     | 1.0        | 500   |
-| 2.0     | 0.5        | 1370  |
-| 5.0     | 0.2        | 2480  |
-| 10.0    | 0.1        | 4640  |
-| 20.0    | 0.05       | 10110 |
-| 50.0    | 0.02       | 21920 |
+| $\beta$ | $\epsilon$ | $n^*$  |
+|---------|------------|--------|
+| 1.0     | 1.0        | 460    |
+| 2.0     | 0.5        | 1308   |
+| 5.0     | 0.2        | 2578   |
+| 10.0    | 0.1        | 4690   |
+| 20.0    | 0.05       | 9350   |
+| 50.0    | 0.02       | ~21000 |
 
 I took numbers based on the graph shown here:
 
 <img src="Images/Figure_1.png" width="100%">
 
-For $\beta = 1.0$, then, I averaged 1000 simulations per every $\Delta n=5$ centered around $n=500$, and found that it was closer to 460. Then I ran 1000 more simulations centered around $n=460$, to produce this graph here:
+For $\beta = 1.0$, then, I averaged 1000 simulations per every $\Delta n=5$ centered around $n=500$, and found that it was closer to 460. Then I ran 1000 more simulations centered around $n=460$, and narrowed it down to $n^* \in [455, 465]$ and produced 3000 simulations per value of $n$ with $\Delta n = 1$, and the graph still wasn't smoothing out.
+
+<img src="Images/Figure_2.png" width="100%">
+
+Instead, I produced a best fit line with the points $n=450, 455, 456, 457, ..., 465, 470$, assuming that the curve was approximately linear at this small scale. Thus, $n^* \approx 460$ for $\beta = 1$. I repeat this with different scales for other values of $\beta$, adjusted for computational viability (as higher values of $\beta$ produce less noisy graphs, so less iterations are needed as well.)
