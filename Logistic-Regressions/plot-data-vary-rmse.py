@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-index = "50.0"
-CENTER = 21270
+index = "8.0"
+CENTER = 3800
 DELTA = 200
 epsilon = 1/float(index)
 

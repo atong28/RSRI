@@ -1,6 +1,5 @@
 import numpy as np
 import cvxpy as cp
-from sklearn.model_selection import train_test_split
 import json
 import sys
 
