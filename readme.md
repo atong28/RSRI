@@ -2,6 +2,8 @@
 
 I am working with Professor Arya Mazumdar to study certain behaviors of logistic regression. Below is the documentation of my experiments and process.
 
+# Logistic Regressions
+
 ## Motivation
 
 On the sample complexity of estimation in logistic regression | Daniel Hsu, Arya Mazumdar
@@ -79,7 +81,7 @@ An initial eye estimate of critical points $n^*$ based on plotting RMSE vs $n$ a
 | 6.0     | 0.166      | 2994   |
 | 7.0     | 0.143      | 3404   |
 | 8.0     | 0.125      | 3808   |
-| 9.0     | 0.111      |        |
+| 9.0     | 0.111      | 4220   |
 | 10.0    | 0.1        | 4690   |
 | 20.0    | 0.05       | 9350   |
 | 50.0    | 0.02       | ~21000 |
