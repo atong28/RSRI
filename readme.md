@@ -2,7 +2,7 @@
 
 I am working with Professor Arya Mazumdar to study various aspects of machine learning. Below is the documentation of my experiments and process.
 
-# Logistic Regressions
+# Sample Complexities of Logistic Regressions
 
 ## Motivation
 
