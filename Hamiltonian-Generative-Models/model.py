@@ -10,6 +10,8 @@ from tqdm.notebook import tqdm
 from torch.utils.data import Subset
 import copy
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def sinusoidal_embedding(n, d):
     # Returns the standard positional embedding
     embedding = torch.tensor([[i / 10_000 ** (2 * j / d) for j in range(d)] for i in range(n)])

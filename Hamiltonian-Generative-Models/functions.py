@@ -8,6 +8,7 @@ from tqdm.notebook import tqdm
 import cv2
 import os
 from IPython.display import clear_output
+from model import UNet, Hamiltonian
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -100,10 +101,10 @@ def generate_image(hamiltonian, sample_size, channel, size):
 ########################################################################################
 # Generates a video provided images, timesteps, and a file title and step size.        #
 ########################################################################################
-def generate_video(images, num_timesteps, file_title='generation' step=5):
+def generate_video(images, num_timesteps, file_title='generation', step=5):
     # Generate Images with Matplotlib
     for i in range(0, num_timesteps, step):
-        show_images(generated[i], file=f'images/{i}.png', title=f'k={i}')
+        show_images(images[i], file=f'images/{i}.png', title=f'k={i}')
         clear_output(wait=True)
 
     # Create Frames List
@@ -163,9 +164,17 @@ def training_loop(model, dataloader, optimizer, num_epochs, num_timesteps, devic
         clear_output(wait=True)
 
 ########################################################################################
+# Save a a trained model to a .pt file.                                                #
+########################################################################################
+def save_model(model, filename):
+    torch.save({
+        'model_state_dict': model.state_dict()
+    }, f'models/{filename}.pt')
+
+########################################################################################
 # Load a saved .pt model file.                                                         #
 ########################################################################################
-def load_model(in_channels=1, filename):
+def load_model(filename, num_timesteps, in_channels=1):
     network = UNet(in_channels=in_channels)
     network = network.to(device)
     model = Hamiltonian(network, num_timesteps, device=device)

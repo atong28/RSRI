@@ -3,3 +3,4 @@ images/
 videos/
 .ipynb_checkpoints/
 __pycache__/
+models/
