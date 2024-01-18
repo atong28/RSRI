@@ -119,17 +119,12 @@ class UNet(nn.Module):
         return output
 
 class Hamiltonian(nn.Module):
-    def __init__(self, network, num_timesteps, eta_start=0.0001, eta_end=0.02, device=device, etas=None, alphas=None, betas=None) -> None:
+    def __init__(self, network, num_timesteps, etas, alphas, betas, device=device) -> None:
         super(Hamiltonian, self).__init__()
         self.num_timesteps = num_timesteps
-        if etas is None:
-            self.etas = torch.linspace(eta_start, eta_end, num_timesteps, dtype=torch.float32).to(device)
-            self.alphas = torch.cumprod(torch.cos(self.etas), 0)
-            self.betas = 1-(self.alphas ** 2)
-        else:
-            self.etas=etas.to(device)
-            self.alphas=alphas.to(device)
-            self.betas=betas.to(device)
+        self.etas = etas
+        self.alphas = alphas
+        self.betas = betas
         self.network = network
         self.device = device
 
@@ -150,19 +145,20 @@ class Hamiltonian(nn.Module):
     def step(self, model_output, timestep, sample):
         # one step of sampling
         # timestep (1)
-        k = timestep
+        k = timestep + 1
         tan_sq_eta = torch.tan(self.etas[k]) ** 2
         alpha_ratio = self.alphas[k-1] / self.alphas[k]
-        s1 = (self.betas[k-1] + (alpha_ratio * tan_sq_eta)) / (tan_sq_eta + self.betas[k-1])
-        s2 = (alpha_ratio * (self.betas[k] ** 0.5) * tan_sq_eta) / (tan_sq_eta + self.betas[k-1])
+        s1 = (self.betas[k-1] / torch.cos(self.etas[k-1]) + (alpha_ratio * tan_sq_eta)) / (tan_sq_eta + self.betas[k-1])
+        # s1 = 1 / torch.cos(self.etas[k-1])
+        s2 = (torch.sin(self.etas[k-1]) ** 2) / (torch.cos(self.etas[k-1]) * (self.betas[k] ** 0.5))
         s1 = s1.reshape(-1,1,1,1)
         s2 = s2.reshape(-1,1,1,1)
         pred_prev_sample = s1 * sample - s2 * model_output
 
         variance = 0
-        if k > 0:
+        if timestep > 0:
             noise = torch.randn_like(model_output).to(self.device)
-            variance = (((tan_sq_eta * self.betas[k-1]) / (tan_sq_eta + self.betas[k-1])) ** 2) * (noise)
+            variance = (torch.sin(self.etas[k-1]) ** 2) * self.betas[k-1] / self.betas[k] * (noise)
 
         pred_prev_sample = pred_prev_sample + variance
 

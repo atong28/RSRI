@@ -8,7 +8,6 @@ from tqdm.notebook import tqdm
 import cv2
 import os
 from IPython.display import clear_output
-from model import UNet, Hamiltonian
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -168,15 +167,19 @@ def training_loop(model, dataloader, optimizer, num_epochs, num_timesteps, devic
 ########################################################################################
 def save_model(model, filename):
     torch.save({
-        'model_state_dict': model.state_dict()
+        'model_state_dict': model.state_dict(),
+        'etas': model.etas,
+        'alphas': model.alphas,
+        'betas': model.betas,
     }, f'models/{filename}.pt')
 
 ########################################################################################
 # Load a saved .pt model file.                                                         #
 ########################################################################################
-def load_model(filename, num_timesteps, in_channels=1):
-    network = UNet(in_channels=in_channels)
-    network = network.to(device)
-    model = Hamiltonian(network, num_timesteps, device=device)
-    model.load_state_dict(torch.load(f'{filename}')['model_state_dict'])
-    return model
+def load_model(filename, num_timesteps, base_model, in_channels=1):
+    imported = torch.load(f'{filename}')
+    base_model.load_state_dict(imported['model_state_dict'])
+    base_model.etas = imported['etas'].to(device)
+    base_model.alphas = imported['alphas'].to(device)
+    base_model.betas = imported['betas'].to(device)
+    return base_model
